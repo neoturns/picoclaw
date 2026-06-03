@@ -268,9 +268,13 @@ func isMainSessionAlias(alias string) bool {
 	if alias == "" {
 		return false
 	}
-	// Legacy form: "agent:main:main" (case-insensitive)
+	// Legacy form: "agent:main:main" (exactly 3 colon-separated parts)
+	// Must not match "agent:sales:direct:main" etc.
 	if strings.HasPrefix(alias, "agent:") && strings.HasSuffix(alias, ":main") {
-		return true
+		parts := strings.SplitN(alias, ":", 4)
+		if len(parts) == 3 {
+			return true
+		}
 	}
 	// Opaque form: "sk_v1_" + SHA256("agent:main:main")
 	if strings.HasPrefix(alias, "sk_v1_") {
